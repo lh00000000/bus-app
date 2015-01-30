@@ -18,12 +18,12 @@ struct trip {
 
 class ofApp : public ofBaseApp{
     trip bieberWeekday[BIEBERTRIPS] = {{425, 600},{445, 635},{505, 655},{540, 740},{600, 805},{620, 810},{650, 840},{720, 910},{750, 940},{820, 1010},{920, 1110},{935, 1125},{1020, 1210},{1220, 1415},{1320, 1515},{1450, 1640},{1720, 1900},{1850, 2030},{2050, 2230}};
-
+    ofPolyline line;
 
 	public:
 
-    int ySpacing = 256;
-    int xSpacing = 128;
+    int ySpacing = 60;
+    int xSpacing = 24;
 		void setup();
 		void update();
 		void draw();
@@ -38,7 +38,7 @@ class ofApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
 
-		void drawBieber(int dayOffset, int xSpacing, int ySpacing);
+		void drawBieber(int dayOffset);
 
 		ofVec2f viewPos;
 		ofVec2f beginMouseDrag;
