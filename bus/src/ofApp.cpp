@@ -4,24 +4,19 @@
 void ofApp::setup() {
     viewPos.set(0,0);
 
-    for (int t = 0; t < BIEBERTRIPS; t ++) {
-        int barheight = timeToPixels(bieberWeekday[t].toTime, ySpacing)-timeToPixels(bieberWeekday[t].fromTime, ySpacing);
-        int y = timeToPixels(bieberWeekday[t].fromTime, ySpacing) + barheight/2;
+    for (int t = 0; t < WEEKENDRUNS; t ++) {
+        int y = timeToPixels(bieberWeekday[t].fromTime, ySpacing);
         int x = xSpacing*t + 1.5*xSpacing;
-        line.curveTo(ofVec2f(x,y));
-
+        line.curveTo(ofVec2f(x,y- ));
     }
-
-
-
-
 }
 
 //--------------------------------------------------------------
 void ofApp::update() {
     int indexOfClosestPath;
     int minDistance = 9999999999;
-    cout << ofGetMouseX() << "," << ofGetMouseY() << endl;
+    viewPos.y = ((int)viewPos.y)%(24*7*ySpacing);
+    viewPos.x = ((int)viewPos.x)%((WEEKENDRUNS+WEEKDAYRUNS)*ySpacing);
 
 }
 
@@ -40,12 +35,12 @@ void ofApp::draw() {
     ofPushStyle();
     ofSetColor(255,255,255,16);
     ofFill();
-    for (int x = 0; x < 200; x += 2) {
-        ofRect(x*xSpacing, -viewPos.y, xSpacing, ofGetHeight());
+    for (int x = 0; x < ofGetWidth()/xSpacing +2 ; x += 2) {
+        int xoffset = viewPos.x - (((int)viewPos.x)%(xSpacing*2));
+        ofRect(x*xSpacing - xoffset, -viewPos.y, xSpacing, ofGetHeight());
         //ofLine(x*xSpacing, -viewPos.y, x*xSpacing, -viewPos.y + ofGetHeight());
     }
     ofPopStyle();
-
     for (int y = 0; y < 200; y ++) {
         ofLine(-viewPos.x , y*ySpacing, -viewPos.x+ofGetWidth(), y*ySpacing);
     }
@@ -57,21 +52,27 @@ void ofApp::draw() {
     }
 
 
-    drawBieber(monday);
-    /*
-    drawBieber(tuesday);
-    drawBieber(wednesday);
-    drawBieber(thursday);
-    drawBieber(friday);*/
+    drawBieber(monday, bieberWeekday, WEEKDAYRUNS);
+    drawBieber(tuesday,bieberWeekday, WEEKDAYRUNS);
+    drawBieber(wednesday,bieberWeekday, WEEKDAYRUNS);
+    drawBieber(thursday, bieberWeekday, WEEKDAYRUNS);
+    drawBieber(friday, bieberWeekday, WEEKDAYRUNS);
+    drawBieber(saturday, bieberWeekend, WEEKENDRUNS);
+    drawBieber(sunday, bieberWeekend, WEEKENDRUNS);
 
-    //time labels
+
+
+    //box behind time labels
     ofPushStyle();
     ofSetColor(0,0,0,48);
     ofRect(-viewPos.x, -viewPos.y, 48, ofGetHeight());
     ofPopStyle();
-    for (int dayy = 0; dayy < 8; dayy ++) {
-        int heightofday = ySpacing*24;
+
+    //time labels
+    int heightofday = ySpacing*24;
+    for (int dayoffset = -heightofday; dayoffset < heightofday*2 + 1; dayoffset+=heightofday) {
         for (int y = 0; y < 24; y ++) {
+            int yoffset = viewPos.y - (((int)viewPos.y)%(ySpacing*24));
             string time;
             if (y == 0) {
                 time = "midnight";
@@ -83,9 +84,10 @@ void ofApp::draw() {
             }else{
                 time = ofToString(y-12) + "pm";
             }
-            ofDrawBitmapString(time, -viewPos.x + 2, dayy*heightofday + y*ySpacing -2 );
+            ofDrawBitmapString(time, -viewPos.x + 2, y*ySpacing - yoffset- 2 + dayoffset);
         }
     }
+
 
     // day string
     // todo: replace with pushing (like months in ical)
@@ -107,6 +109,12 @@ void ofApp::draw() {
     case friday:
         dayString = "friday";
         break;
+    case saturday:
+        dayString = "saturday";
+        break;
+    case sunday:
+        dayString = "sunday";
+        break;
     default:
         dayString = "idk";
         break;
@@ -117,37 +125,34 @@ void ofApp::draw() {
 
 }
 
-void ofApp::drawBieber(int dayOffset) {
+void ofApp::drawBieber(int dayOffset, trip* bieberday, int numruns) {
     //bieber
-    dayOffset += 1;
     ofColor bieberGold = ofColor(216,151,9);
     ofColor agencyColor = bieberGold;
     int barWidth = 10;
-    int yySpacing = ySpacing;
-    int xxSpacing = xSpacing;
     string fromStopName = "hellertown";
     string toStopName = "PABT";
 
     ofPushMatrix();
-    ofTranslate(xSpacing*BIEBERTRIPS*dayOffset, 24*yySpacing*dayOffset);
+    ofTranslate(xSpacing*numruns*(dayOffset), 24*ySpacing*dayOffset);
 
     ofPushStyle();
     ofSetColor(agencyColor);
     ofFill();
     ofSetLineWidth(2);
 
-    for (int t = 0; t < BIEBERTRIPS; t ++) {
+    for (int t = 0; t < numruns; t ++) {
 
         int left = (1.5*xSpacing) + t*xSpacing - barWidth/2;
-        int top = timeToPixels(bieberWeekday[t].fromTime, yySpacing);
-        int barheight = timeToPixels(bieberWeekday[t].toTime,yySpacing) - timeToPixels(bieberWeekday[t].fromTime, yySpacing);
+        int top = timeToPixels(bieberday[t].fromTime, ySpacing);
+        int barheight = timeToPixels(bieberday[t].toTime,ySpacing) - timeToPixels(bieberday[t].fromTime, ySpacing);
 
         ofRect(left, top, barWidth, barheight);
 
-        string fromInfo = fromStopName + "\n" + timeToString(bieberWeekday[t].fromTime);
+        string fromInfo = fromStopName + "\n" + timeToString(bieberday[t].fromTime);
         ofDrawBitmapString(fromInfo, left + barWidth + 2, top + 10);
 
-        string toInfo = timeToString(bieberWeekday[t].toTime) + "\n" + toStopName ;
+        string toInfo = timeToString(bieberday[t].toTime) + "\n" + toStopName ;
         ofDrawBitmapString(toInfo, left +  barWidth + 2, top + barheight - 14);
     }
     ofPopStyle();

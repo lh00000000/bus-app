@@ -1,10 +1,10 @@
 #pragma once
 
 #include "ofMain.h"
-#define BIEBERTRIPS 19
-
+#define WEEKDAYRUNS 19
+#define WEEKENDRUNS 8
 enum day {
-    monday, tuesday, wednesday, thursday, friday
+    monday, tuesday, wednesday, thursday, friday, saturday, sunday
 };
 
 
@@ -17,13 +17,14 @@ struct trip {
 
 
 class ofApp : public ofBaseApp{
-    trip bieberWeekday[BIEBERTRIPS] = {{425, 600},{445, 635},{505, 655},{540, 740},{600, 805},{620, 810},{650, 840},{720, 910},{750, 940},{820, 1010},{920, 1110},{935, 1125},{1020, 1210},{1220, 1415},{1320, 1515},{1450, 1640},{1720, 1900},{1850, 2030},{2050, 2230}};
+    trip bieberWeekday[WEEKDAYRUNS] = {{425, 600},{445, 635},{505, 655},{540, 740},{600, 805},{620, 810},{650, 840},{720, 910},{750, 940},{820, 1010},{920, 1110},{935, 1125},{1020, 1210},{1220, 1415},{1320, 1515},{1450, 1640},{1720, 1900},{1850, 2030},{2050, 2230}};
+    trip bieberWeekend[WEEKENDRUNS] = {{615,800},{815,1000},{1015,1201},{1215,1400},{1415,1600},{1615,1800},{1815,2000},{2015,2200}};
     ofPolyline line;
 
 	public:
 
     int ySpacing = 60;
-    int xSpacing = 24;
+    int xSpacing = 128;
 		void setup();
 		void update();
 		void draw();
@@ -38,7 +39,7 @@ class ofApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
 
-		void drawBieber(int dayOffset);
+		void drawBieber(int dayOffset, trip* bieberday, int numruns);
 
 		ofVec2f viewPos;
 		ofVec2f beginMouseDrag;
