@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ofMain.h"
-#define BIEBERTRIPS 20
+#define BIEBERTRIPS 19
 
 enum day {
     monday, tuesday, wednesday, thursday, friday

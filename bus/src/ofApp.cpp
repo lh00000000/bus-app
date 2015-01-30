@@ -32,6 +32,7 @@ void ofApp::draw() {
 
     //need bieber/trans/drive
 
+    ofPushMatrix();
     ofTranslate(viewPos);
 
     //guidelines
@@ -56,9 +57,12 @@ void ofApp::draw() {
     }
 
 
-    drawBieber(0);
-    //drawBieber(-1, xSpacing, ySpacing);
-    //drawBieber(1, xSpacing, ySpacing);
+    drawBieber(monday);
+    /*
+    drawBieber(tuesday);
+    drawBieber(wednesday);
+    drawBieber(thursday);
+    drawBieber(friday);*/
 
     //time labels
     ofPushStyle();
@@ -109,13 +113,13 @@ void ofApp::draw() {
     }
     ofDrawBitmapString(dayString, -viewPos.x + 4, -viewPos.y +12);
 
-
+    ofPopMatrix();
 
 }
 
 void ofApp::drawBieber(int dayOffset) {
     //bieber
-
+    dayOffset += 1;
     ofColor bieberGold = ofColor(216,151,9);
     ofColor agencyColor = bieberGold;
     int barWidth = 10;
@@ -125,7 +129,7 @@ void ofApp::drawBieber(int dayOffset) {
     string toStopName = "PABT";
 
     ofPushMatrix();
-    ofTranslate(xSpacing*BIEBERTRIPS, 24*yySpacing);
+    ofTranslate(xSpacing*BIEBERTRIPS*dayOffset, 24*yySpacing*dayOffset);
 
     ofPushStyle();
     ofSetColor(agencyColor);
