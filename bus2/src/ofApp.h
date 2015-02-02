@@ -2,7 +2,7 @@
 
 #include "ofMain.h"
 
-#define NUMTRIPS 112
+#define NUMTRIPS 111
 struct tripTime {
     int startSec;
     int endSec;
@@ -13,8 +13,8 @@ class ofApp : public ofBaseApp {
     struct centerOfView {
         ofVec2f pos = ofVec2f(ofGetWidth()/2, ofGetHeight()/2);
         ofVec2f vel = ofVec2f(0,0);
-        float mass = 1500;
-        float drag = 0.97;
+        float mass = 50;
+        float drag = 0;
 
         void update() {
             pos += vel;
@@ -44,6 +44,7 @@ public:
 
     int beginningSecond;
     int endingSecond;
+    ofTrueTypeFont type;
 
     void setup();
     void update();
@@ -59,7 +60,7 @@ public:
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
 
-    tripTime weekSchedule[NUMTRIPS] = {{15900,21600},
+    tripTime toPABT[NUMTRIPS] = {{15900,21600},
         {17100,23700},
         {18300,24900},
         {20400,27600},

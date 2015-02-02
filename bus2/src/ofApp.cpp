@@ -1,8 +1,38 @@
 #include "ofApp.h"
-#define WINDOWHOURS 8
+#define WINDOWHOURS 80
+
+struct busTime {
+    private int secondsFromSunday;
+    private int secondsFromClosestMidnight;
+    private int hoursIntoDay;
+    private int minutesIntoHour;
+    busTime(int time) {
+        int secsInADay = 24*60*60;
+        secondsFromSunday = time;
+        secondsFromClosestMidnight = time % secsInADay;
+        hoursIntoDay = secsIntoTheDay / (60*60);
+        minutesIntoHour = (secsIntoTheDay % (60*60))/60;
+    }
+
+};
+
+
+string timeToString(int time) {
+    int secsInADay = 24*60*60;
+    int secsIntoTheDay = time % secsInADay;
+    int hoursIntoDay = secsIntoTheDay / (60*60);
+    int minutesIntoHour = (secsIntoTheDay % (60*60))/60;
+    return ofToString(minutesIntoHour);
+
+}
 //--------------------------------------------------------------
 void ofApp::setup(){
+    type.loadFont("./data/Inconsolata.otf",10);
 
+    for (int i = 0; i < 50; i++) {
+        cout << timeToString(toPABT[i].startSec) << endl;
+
+    }
 }
 
 //--------------------------------------------------------------
@@ -12,24 +42,37 @@ void ofApp::update(){
     endingSecond = beginningSecond + WINDOWHOURS*60*60;
 }
 
+
+
 //--------------------------------------------------------------
 void ofApp::draw(){
-
 
     ofSetColor(255);
     //ofCircle(ball.pos, 50);
     //ofCircle(ball.pos.x, ball.pos.y - ofGetHeight(), 50);
     //ofCircle(ball.pos.x, ball.pos.y + ofGetHeight(), 50);
 
-    ofDrawBitmapString("begin hour: " + ofToString(beginningSecond), 20, 20);
-    ofDrawBitmapString("ending hour: " + ofToString(endingSecond), 20, ofGetHeight() - 25);
+    type.drawString("begin hour: " + ofToString(beginningSecond), 20, 20);
+    type.drawString("ending hour: " + ofToString(endingSecond), 20, ofGetHeight() - 25);
 
+
+    int heightOfWeek = ofGetHeight()*42;
     ofPushMatrix();
-    ofTranslate(0,-beginningSecond);
-    for (int i = 0; i < NUMTRIPS; i++) {
-        if (weekSchedule[i].endSec > beginningSecond && weekSchedule[i].startSec < endingSecond) {
-            ofRect(i * 2, weekSchedule[i].startSec, 10, weekSchedule[i].endSec - weekSchedule[i].startSec);
+    ofTranslate(0, -ofMap(beginningSecond, 0, 24*60*60*7, 0, heightOfWeek));
+    for (int tile = -1; tile < 2; tile ++) {
+        ofPushMatrix();
+        ofTranslate(0, heightOfWeek*tile);
+        for (int i = 0; i < NUMTRIPS; i++) {
+
+            int leaveTimeX = 100;
+            int leaveTimeY = ofMap(toPABT[i].startSec, 0, 24*60*60*7, 0, heightOfWeek);
+            int arriveTimeX = ofGetWidth()-100;
+            int arriveTimeY = ofMap(toPABT[i].endSec, 0, 24*60*60*7, 0, heightOfWeek);
+
+            ofLine(leaveTimeX, leaveTimeY, arriveTimeX, arriveTimeY);
+            type.drawString(timeToString(toPABT[i].startSec), leaveTimeX, leaveTimeY);
         }
+        ofPopMatrix();
     }
     ofPopMatrix();
 }
@@ -52,7 +95,7 @@ void ofApp::mouseMoved(int x, int y ){
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button){
     toss.update(x,y);
-    ball.vel.y = toss.getVel().y/150;
+    ball.vel.y = toss.getVel().y/5;
 }
 
 //--------------------------------------------------------------
