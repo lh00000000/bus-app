@@ -180,13 +180,15 @@ void ofApp::draw() {
             ofCircle(leaveTimeX,leaveTimeY,3);
             ofCircle(arriveTimeX,arriveTimeY,3);
 
+            //ofPushStyle();
+            //if leaveTimeY - ballPos < Thres, ofMap val to opacity (fade out near top)
+            ofSetColor(255)
             fromLocationFont.drawString("  hellertown:", 0, leaveTimeY-2);
             fromTimeFont.drawString(toPABT[i].startTime.timeStr(), 87, leaveTimeY-2);
             fromTimeAMPMFont.drawString(toPABT[i].startTime.ampm(), leaveTimeX-33, leaveTimeY-2);
 
             toTimeFont.drawString(toPABT[i].endTime.timeStr(), arriveTimeX+4, arriveTimeY-2);
             toTimeAMPMFont.drawString(toPABT[i].endTime.ampm(), arriveTimeX+90, arriveTimeY-2);
-
             toLocationFont.drawString(" PABT", arriveTimeX + 110, arriveTimeY-2);
 
         }

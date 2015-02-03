@@ -3,6 +3,16 @@
 #include "ofMain.h"
 
 #define NUMTRIPS 111
+
+//TODO
+// display day
+// scroll away day
+// day menu
+// time of day slider (top left)
+// trips back
+// swipe to see back trips
+// go to current time
+
 enum day {
     MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY, NUM_DAYS
 };
@@ -60,8 +70,8 @@ class ofApp : public ofBaseApp {
     struct centerOfView {
         ofVec2f pos = ofVec2f(0,0);
         ofVec2f vel = ofVec2f(0,0);
-        float mass = 50;
-        float drag = .5;
+        float mass = 30;
+        float drag = .7;
 
         void update() {
             pos += vel;
