@@ -122,7 +122,7 @@ void ofApp::drawHellertownToPABT() {
             arriveTimeY = arriveTimeY + 15;
         }
         ofPushStyle();
-        ofSetColor(255,(leaveTimeY+40)-(-viewTranslateY));
+        ofSetColor(255,(leaveTimeY+160)-(-viewTranslateY));
         //line under fromLocation
         ofSetLineWidth(.5);
         ofLine(0,leaveTimeY, leaveTimeX,leaveTimeY);
@@ -131,7 +131,6 @@ void ofApp::drawHellertownToPABT() {
         fromTimeFont.drawString(toPABT[i].startTime.timeStr(), 87, leaveTimeY-2);
         fromTimeAMPMFont.drawString(toPABT[i].startTime.ampm(), leaveTimeX-33, leaveTimeY-2);
         ofPopStyle();
-
 
         ofPushStyle();
         ofSetColor(255,arriveTimeY-(-viewTranslateY));
@@ -155,6 +154,7 @@ void ofApp::drawHellertownToPABT() {
 //--------------------------------------------------------------
 void ofApp::draw() {
 
+    ofPushStyle();
     ofSetColor(255);
 
     ofPushMatrix();
@@ -236,6 +236,7 @@ void ofApp::draw() {
 
     
     ofPopMatrix(); // for scrolling
+    ofPopStyle();
 }
 
 //--------------------------------------------------------------

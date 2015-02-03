@@ -76,7 +76,7 @@ struct dayLabel {
         dayIndex = dayi;
         int heightOfHour = heightOfDay/24;
         topOfBox = heightOfDay*dayi;
-        bottomOfBox = topOfBox + heightOfDay - heightOfHour;
+        bottomOfBox = topOfBox + heightOfDay - 54;
         labelY = topOfBox;
 
         switch (dayIndex) {
@@ -114,10 +114,7 @@ struct dayLabel {
         } else if (camYPos + marginFromTopOfWindow > topOfBox && camYPos + marginFromTopOfWindow < bottomOfBox) {
             labelY = camYPos + marginFromTopOfWindow + marginFromTopOfDay;
             cout << "cond2" << endl;
-        } else {
-          /*  labelY = bottomOfBox + 36;
-            cout << "cond3" << endl;*/
-        }
+        } 
     }
 
 
