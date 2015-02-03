@@ -65,6 +65,64 @@ struct tripTime {
 };
 
 
+struct dayLabel {
+    int dayIndex;
+    int topOfBox;
+    int bottomOfBox;
+    int labelX;
+    int labelY;
+    int buf = 36;
+    dayLabel(int dayi, int heightOfDay) {
+        dayIndex = dayi;
+        int heightOfHour = heightOfDay/24;
+        topOfBox = heightOfDay*dayi;
+        bottomOfBox = topOfBox + heightOfDay - heightOfHour;
+        labelY = topOfBox;
+
+        switch (dayIndex) {
+            case MONDAY:
+                labelX = ofGetWidth() - 220;
+                break;
+            case TUESDAY:
+                labelX = ofGetWidth() - 220;
+                break;
+            case WEDNESDAY:
+                labelX = ofGetWidth() - 280;
+                break;
+            case THURSDAY:
+                labelX = ofGetWidth() - 225;
+                break;
+            case FRIDAY:
+                labelX = ofGetWidth() - 180;
+                break;
+            case SATURDAY:
+                labelX = ofGetWidth() - 220;
+                break;
+            case SUNDAY:
+                labelX = ofGetWidth() - 200;
+                break;
+
+        } 
+
+    }
+    void update(int camYPos) {
+        int marginFromTopOfWindow=30;
+        int marginFromTopOfDay = 48;
+        if (camYPos + marginFromTopOfWindow < topOfBox) {
+            labelY = topOfBox + marginFromTopOfDay;
+            cout << "cond1" << endl;
+        } else if (camYPos + marginFromTopOfWindow > topOfBox && camYPos + marginFromTopOfWindow < bottomOfBox) {
+            labelY = camYPos + marginFromTopOfWindow + marginFromTopOfDay;
+            cout << "cond2" << endl;
+        } else {
+          /*  labelY = bottomOfBox + 36;
+            cout << "cond3" << endl;*/
+        }
+    }
+
+
+};
+
 class ofApp : public ofBaseApp {
 
     struct centerOfView {
@@ -73,6 +131,7 @@ class ofApp : public ofBaseApp {
         float mass = 30;
         float drag = .7;
 
+
         void update() {
             pos += vel;
             vel *= drag;
@@ -80,6 +139,7 @@ class ofApp : public ofBaseApp {
             if (pos.x > ofGetWidth()) pos.x = 0;
             if (pos.y < 0) pos.y = ofGetHeight();
             if (pos.y > ofGetHeight()) pos.y = 0;
+        
         }
     } ball;
 
@@ -103,6 +163,8 @@ public:
     int heightOfDay = heightOfWeek/7;
     int beginningSecond;
     int endingSecond;
+
+    int viewTranslateY;
     ofTrueTypeFont hourLabelFont;
     ofTrueTypeFont fromLocationFont;
     ofTrueTypeFont fromTimeFont;
@@ -112,6 +174,15 @@ public:
     ofTrueTypeFont toTimeFont;
     ofTrueTypeFont toTimeAMPMFont;
 
+    ofTrueTypeFont dayLabelFont;
+
+    struct dayLabel mondayLabel = dayLabel(0, heightOfDay);
+    struct dayLabel tuesdayLabel = dayLabel(1, heightOfDay);
+    struct dayLabel wednesdayLabel = dayLabel(2, heightOfDay);
+    struct dayLabel thursdayLabel = dayLabel(3, heightOfDay);
+    struct dayLabel fridayLabel = dayLabel(4, heightOfDay);
+    struct dayLabel saturdayLabel = dayLabel(5, heightOfDay);
+    struct dayLabel sundayLabel = dayLabel(6, heightOfDay);
 
 
     void setup();
@@ -119,6 +190,7 @@ public:
     void draw();
 
     void drawDayGrid(int r, int g, int b, int brightnessDiff);
+    void drawHellertownToPABT();
 
     void keyPressed(int key);
     void keyReleased(int key);
