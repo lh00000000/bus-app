@@ -1,7 +1,7 @@
 #include "ofApp.h"
 #define WINDOWHOURS 80
 
-int secondsInAWeek = 24*60*60*7;
+
 //--------------------------------------------------------------
 void ofApp::setup() {
     //type.loadFont("./data/Inconsolata.otf",32);
@@ -22,8 +22,9 @@ void ofApp::setup() {
     ofSetFrameRate(60);
 
     nowCursor.update();
-    ball.target.y = ofMap(nowCursor.secIntoWeek - (45*60), 0, secondsInAWeek, ofGetHeight(), 0);
+    snapToCurrentTime();
 }
+
 
 //--------------------------------------------------------------
 void ofApp::update() {
@@ -115,7 +116,7 @@ void ofApp::drawHellertownToPABT() {
     ///////trips///////
     ofPushStyle();
     ofSetColor(255);
-    for (int i = 0; i < NUMTRIPS; i++) {
+    for (int i = 0; i < NUM_ROUTES; i++) {
         int leaveTimeX = ofGetWidth()/3;
         int leaveTimeY = ofMap(toPABT[i].startTime.secondsFromSunday, 0, 24*60*60*7, 0, heightOfWeek);
         int arriveTimeX = ofGetWidth()*2/3;
@@ -154,6 +155,53 @@ void ofApp::drawHellertownToPABT() {
     }
     ofPopStyle();
 }
+
+void ofApp::drawPABTtoHellertown() {
+
+    ///////trips///////
+    ofPushStyle();
+    ofSetColor(255);
+    for (int i = 0; i < NUM_ROUTES; i++) {
+        int leaveTimeX = ofGetWidth()/3;
+        int leaveTimeY = ofMap(toHellertown[i].startTime.secondsFromSunday, 0, 24*60*60*7, 0, heightOfWeek);
+        int arriveTimeX = ofGetWidth()*2/3;
+        int arriveTimeY = ofMap(toHellertown[i].endTime.secondsFromSunday, 0, 24*60*60*7, 0, heightOfWeek);
+
+        if (toHellertown[i].endTime.hour() == 8 &&
+            toHellertown[i].endTime.minute() == 10) {
+            arriveTimeY = arriveTimeY + 15;
+        }
+        ofPushStyle();
+        ofSetColor(255,(leaveTimeY+160)-(-viewTranslateY));
+        //line under fromLocation
+        ofSetLineWidth(.5);
+        ofLine(0,leaveTimeY, leaveTimeX,leaveTimeY);
+        ofCircle(leaveTimeX,leaveTimeY,3);
+        toLocationFont.drawString("   PABT:", 0, leaveTimeY-2);
+        fromTimeFont.drawString(toHellertown[i].startTime.timeStr(), 87, leaveTimeY-2);
+        fromTimeAMPMFont.drawString(toHellertown[i].startTime.ampm(), leaveTimeX-33, leaveTimeY-2);
+        ofPopStyle();
+
+        ofPushStyle();
+        ofSetColor(255,arriveTimeY-(-viewTranslateY));
+        //line from leave to arrive
+        ofSetLineWidth(2);
+        ofLine(leaveTimeX, leaveTimeY, arriveTimeX, arriveTimeY);
+        ofSetLineWidth(.5);
+        ofLine(arriveTimeX, arriveTimeY, ofGetWidth(), arriveTimeY);
+        ofCircle(arriveTimeX,arriveTimeY,3);
+
+
+        toTimeFont.drawString(toHellertown[i].endTime.timeStr(), arriveTimeX+4, arriveTimeY-2);
+        toTimeAMPMFont.drawString(toHellertown[i].endTime.ampm(), arriveTimeX+90, arriveTimeY-2);
+        fromLocationFont.drawString(" hellertown", arriveTimeX + 120, arriveTimeY-2);
+        ofPopStyle();
+
+    }
+    ofPopStyle();
+}
+
+
 
 //--------------------------------------------------------------
 void ofApp::draw() {
@@ -223,7 +271,10 @@ void ofApp::draw() {
 
         }
 
-        drawHellertownToPABT();
+        if (drawReturn)
+	        drawPABTtoHellertown();
+	    else
+	    	drawHellertownToPABT();
 
         dayLabelFont.drawString("monday", mondayLabel.labelX, mondayLabel.labelY);
         dayLabelFont.drawString("tuesday", tuesdayLabel.labelX, tuesdayLabel.labelY);
@@ -237,9 +288,7 @@ void ofApp::draw() {
         ofPushStyle();
         ofSetColor(75, 128, 209);
         int nowTimeY = ofMap(nowCursor.secIntoWeek, 0, secondsInAWeek, 0, heightOfWeek);
-        
         ofLine(0, nowTimeY, ofGetWidth(), nowTimeY);
-        // ofRect(0, nowTimeY, 50, -10);
         ofRectangle hourLabelBg = ofRectangle(0, nowTimeY, 55, -13);
         ofRectRounded(hourLabelBg,0,3,0,0);
         ofPopStyle();
@@ -256,7 +305,7 @@ void ofApp::draw() {
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
-
+	drawReturn = !drawReturn;
 }
 
 //--------------------------------------------------------------
@@ -272,13 +321,22 @@ void ofApp::mouseMoved(int x, int y ) {
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button) {
     toss.update(x,y);
-    ball.vel.y = toss.getVel().y/2;
+    ball.vel.y = toss.getVel().y;
 }
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button) {
     toss.prevPos = ofVec2f(x,y);
     toss.currentPos = ofVec2f(x,y);
+
+    if (x > ofGetWidth() - 300 && y < 80) {
+	    int currentClickTime = ofGetElapsedTimeMillis();
+		cout << ofGetElapsedTimeMillis();
+		if (currentClickTime - lastClickTime < 600) {
+			snapToCurrentTime();
+		}
+		lastClickTime = currentClickTime;
+	}
 }
 
 //--------------------------------------------------------------
@@ -286,6 +344,9 @@ void ofApp::mouseReleased(int x, int y, int button) {
 
 }
 
+void ofApp::mouseDoubleClicked() {
+	snapToCurrentTime();
+}
 //--------------------------------------------------------------
 void ofApp::windowResized(int w, int h) {
 
