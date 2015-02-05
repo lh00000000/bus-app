@@ -64,6 +64,46 @@ struct tripTime {
     busTime endTime;
 };
 
+struct currentTimeCursor {
+    struct tm * now;
+    int secIntoWeek;
+
+	time_t timeNow;
+	void update() {
+        time_t t = time(0);   // get time now
+        now = localtime( & t );
+        
+        int fromSundayToMidnight = (((now->tm_wday-1)+7)%7)*24*60*60;
+        int fromMidnightToHour = now->tm_hour*60*60;
+        int fromHourToMinute = now->tm_min*60;
+        int fromMinuteToSecond = now->tm_sec;
+
+        secIntoWeek = fromSundayToMidnight + fromMidnightToHour  + fromHourToMinute + fromMinuteToSecond;
+	}
+
+    string ampm() {
+        if (now->tm_hour > 11) {
+            return "pm";
+        } else {
+            return "am";
+        }
+    }
+
+    string timeStr() {
+        if (now->tm_min == 0) {
+            if (now->tm_hour == 0) 
+                return "midnight";
+            else if (now->tm_hour == 12)
+                return "noon";
+        } else {
+            if (now->tm_hour%12 == 0)
+
+                return ofToString(now->tm_hour,0,2,' ') + ":" + ofToString(now->tm_min,0,2,'0') + ampm();
+            else
+                return ofToString(now->tm_hour%12,0,2,' ') + ":" + ofToString(now->tm_min,0,2,'0') + ampm();
+        }
+    }
+};
 
 struct dayLabel {
     int dayIndex;
@@ -110,49 +150,59 @@ struct dayLabel {
         int marginFromTopOfDay = 48;
         if (camYPos + marginFromTopOfWindow < topOfBox) {
             labelY = topOfBox + marginFromTopOfDay;
-            cout << "cond1" << endl;
         } else if (camYPos + marginFromTopOfWindow > topOfBox && camYPos + marginFromTopOfWindow < bottomOfBox) {
             labelY = camYPos + marginFromTopOfWindow + marginFromTopOfDay;
-            cout << "cond2" << endl;
         } 
     }
 
 
 };
 
+struct centerOfView {
+    ofVec2f pos = ofVec2f(0,0);
+    ofVec2f target = ofVec2f(0,0);
+    ofVec2f vel = ofVec2f(0,0);
+    float mass = 60;
+    float drag = .2;
+
+
+    void update() {
+        if (target.x < 0) target.x = ofGetWidth();
+        if (target.x > ofGetWidth()) target.x = 0;
+        if (target.y < 0) target.y = ofGetHeight();
+        if (target.y > ofGetHeight()) target.y = 0;
+
+        target += vel;
+        vel *= drag;
+        pos.interpolate(target, 0.5);
+        if (pos.x < 0) pos.x = ofGetWidth();
+        if (pos.x > ofGetWidth()) pos.x = 0;
+        if (pos.y < 0) pos.y = ofGetHeight();
+        if (pos.y > ofGetHeight()) pos.y = 0;
+    
+    }
+};
+
+struct mouseToss {
+    ofVec2f prevPos;
+    ofVec2f currentPos;
+
+    void update(int x, int y) {
+        prevPos = currentPos;
+        currentPos = ofVec2f(x,y);
+    }
+    ofVec2f getVel() {
+        return currentPos - prevPos;
+    }
+
+};
+
+
 class ofApp : public ofBaseApp {
 
-    struct centerOfView {
-        ofVec2f pos = ofVec2f(0,0);
-        ofVec2f vel = ofVec2f(0,0);
-        float mass = 30;
-        float drag = .7;
-
-
-        void update() {
-            pos += vel;
-            vel *= drag;
-            if (pos.x < 0) pos.x = ofGetWidth();
-            if (pos.x > ofGetWidth()) pos.x = 0;
-            if (pos.y < 0) pos.y = ofGetHeight();
-            if (pos.y > ofGetHeight()) pos.y = 0;
-        
-        }
-    } ball;
-
-    struct mouseToss {
-        ofVec2f prevPos;
-        ofVec2f currentPos;
-
-        void update(int x, int y) {
-            prevPos = currentPos;
-            currentPos = ofVec2f(x,y);
-        }
-        ofVec2f getVel() {
-            return currentPos - prevPos;
-        }
-
-    } toss;
+    struct centerOfView ball;
+    struct mouseToss toss;
+    struct currentTimeCursor nowCursor;
 
 public:
 

@@ -1,6 +1,7 @@
 #include "ofApp.h"
 #define WINDOWHOURS 80
 
+int secondsInAWeek = 24*60*60*7;
 //--------------------------------------------------------------
 void ofApp::setup() {
     //type.loadFont("./data/Inconsolata.otf",32);
@@ -16,11 +17,12 @@ void ofApp::setup() {
 
     dayLabelFont.loadFont("./data/FreeSansBold.otf",36);
 
-
     ofEnableSmoothing();
     ofBackground(0);
     ofSetFrameRate(60);
 
+    nowCursor.update();
+    ball.target.y = ofMap(nowCursor.secIntoWeek - (45*60), 0, secondsInAWeek, ofGetHeight(), 0);
 }
 
 //--------------------------------------------------------------
@@ -29,8 +31,8 @@ void ofApp::update() {
     beginningSecond = ofMap(ball.pos.y, ofGetHeight(),0, 0, 86400*7);
     endingSecond = beginningSecond + WINDOWHOURS*60*60;
 
-    viewTranslateY = -ofMap(beginningSecond, 0, 24*60*60*7, 0, heightOfWeek);
-    cout << -viewTranslateY << endl;
+    viewTranslateY = -ofMap(beginningSecond, 0, secondsInAWeek, 0, heightOfWeek);
+    //cout << -viewTranslateY << endl;
     if (viewTranslateY < -heightOfWeek/2) {
         mondayLabel.update(-(viewTranslateY+heightOfWeek));
     } else {
@@ -42,6 +44,8 @@ void ofApp::update() {
     fridayLabel.update(-viewTranslateY);
     saturdayLabel.update(-viewTranslateY);
     sundayLabel.update(-viewTranslateY);
+
+    nowCursor.update();
 
 }
 
@@ -117,7 +121,7 @@ void ofApp::drawHellertownToPABT() {
         int arriveTimeX = ofGetWidth()*2/3;
         int arriveTimeY = ofMap(toPABT[i].endTime.secondsFromSunday, 0, 24*60*60*7, 0, heightOfWeek);
 
-        if (toPABT[i].endTime.hour() == 8 && 
+        if (toPABT[i].endTime.hour() == 8 &&
             toPABT[i].endTime.minute() == 10) {
             arriveTimeY = arriveTimeY + 15;
         }
@@ -141,7 +145,7 @@ void ofApp::drawHellertownToPABT() {
         ofLine(arriveTimeX, arriveTimeY, ofGetWidth(), arriveTimeY);
         ofCircle(arriveTimeX,arriveTimeY,3);
 
-        
+
         toTimeFont.drawString(toPABT[i].endTime.timeStr(), arriveTimeX+4, arriveTimeY-2);
         toTimeAMPMFont.drawString(toPABT[i].endTime.ampm(), arriveTimeX+90, arriveTimeY-2);
         toLocationFont.drawString(" PABT", arriveTimeX + 110, arriveTimeY-2);
@@ -229,14 +233,25 @@ void ofApp::draw() {
         dayLabelFont.drawString("saturday", saturdayLabel.labelX, saturdayLabel.labelY);
         dayLabelFont.drawString("sunday", sundayLabel.labelX, sundayLabel.labelY);
 
+        //draw now line
+        ofPushStyle();
+        ofSetColor(75, 128, 209);
+        int nowTimeY = ofMap(nowCursor.secIntoWeek, 0, secondsInAWeek, 0, heightOfWeek);
+        
+        ofLine(0, nowTimeY, ofGetWidth(), nowTimeY);
+        // ofRect(0, nowTimeY, 50, -10);
+        ofRectangle hourLabelBg = ofRectangle(0, nowTimeY, 55, -13);
+        ofRectRounded(hourLabelBg,0,3,0,0);
+        ofPopStyle();
+        hourLabelFont.drawString(nowCursor.timeStr(), 2, nowTimeY-2);
 
         ofPopMatrix(); //for tiling
+
     }
 
-
-    
     ofPopMatrix(); // for scrolling
     ofPopStyle();
+
 }
 
 //--------------------------------------------------------------
