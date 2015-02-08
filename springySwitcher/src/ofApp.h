@@ -2,96 +2,107 @@
 
 #include "ofMain.h"
 
-struct attractor {
-	ofVec2f pos;
-	float mass=100;
-	float maxForce=10000;
-	float minDistance=60;
-	ofVec2f getForce(ofVec2f point) {
-		ofVec2f force = pos - point;
-		force.normalize();
 
-		force.scale(mass/(point.distance(pos)));
-		if (force.length() > maxForce) {
-			force.normalize();
-			force.scale(maxForce);
-		}
-		if (point.distance(pos)<minDistance) {
-			force.scale(0);
-		}
-		return force;
-	}
-	void draw() {
-		ofRect(pos, 10, 10);
-	}
+
+struct springyToggle {
+    float position=.5;
+    float positionSmoothed = .5;
+    float velocity=0;
+    float acceleration=0;
+    float mass=300;
+    float drag = .9;
+    float k = 0.4;
+    float maxspeed = .1;
+    void update() {
+        acceleration *= 1.0/mass;
+        velocity += acceleration;
+        bound();
+        position += velocity;
+        bound();
+        velocity *= drag;
+        bound();
+        positionSmoothed = ofLerp(positionSmoothed, position, 0.5);
+    }
+
+    void applySprings() {
+        float leftSpring = -k*position;
+        float rightSpring = -k*(position-1);
+        acceleration += -leftSpring - rightSpring;
+    }
+    void bound() {
+        if (position < 0) position = 0;
+        if (position > 1) position = 1;
+        if (velocity > maxspeed) velocity = maxspeed;
+        if (velocity < -maxspeed) velocity = -maxspeed;
+    }
+    bool isOn() {
+        if (position > .97) return true;
+        if (position < .03) return false;
+    }
+    void push(float d) {
+        position += d;
+        bound();
+    }
 };
 
-struct particle {
-    ofVec2f pos = ofVec2f(0,0);
-    ofVec2f target = ofVec2f(0,0);
-    ofVec2f vel = ofVec2f(0,0);
-    ofVec2f accel = ofVec2f(0,0);
-    float mass = 10;
-    float drag = .7;
-    float maxspeed = 10;
-    float radius = 50;
+struct dragEvent {
+    ofVec2f a;
+    ofVec2f b;
+    ofVec2f getVel() {
+        ofVec2f del = b-a;
+        a = b;
+        return del;
+    }
+    ofVec2f getDel() {
+        return b-a;
+    }
+};
+
+struct toggleSystem {
+    struct springyToggle tog;
+    struct dragEvent drag;
+    struct dragEvent fling;
+    float mouseMass = 800;
 
     void update() {
-        if (vel.length() > 30000) {
-            vel.normalize();
-            vel.scale(maxspeed);
+        if (!ofGetMousePressed()) {
+            tog.applySprings();
         }
-
-/*	        if (target.x < 0) target.x = ofGetWidth();
-        if (target.x > ofGetWidth()) target.x = 0;
-        if (target.y < 0) target.y = ofGetHeight();
-        if (target.y > ofGetHeight()) target.y = 0;*/
-
-        vel += accel;
-        target += vel;
-        vel *= drag;
-        pos.interpolate(target, 0.5);
-        accel.scale(0);
-
-/*	        if (pos.x < 0) pos.x = ofGetWidth();
-        if (pos.x > ofGetWidth()) pos.x = 0;
-        if (pos.y < 0) pos.y = ofGetHeight();
-        if (pos.y > ofGetHeight()) pos.y = 0;*/
+        tog.update();
+        cout << drag.getDel() << endl;
     }
 
-    void applyForce(ofVec2f f) {
-    	accel += f;
+
+    void mousePressed(int x, int y) {
+        //cout << "mouse pressed" <<endl;
+        drag.a = ofVec2f(x,y);
+        drag.b = drag.a;
+        fling.a = ofVec2f(x,y);
     }
 
-    void moveTo(ofVec2f p) {
-    	ofVec2f prevVel = vel;
-    	vel = p - pos;
-    	accel = vel - prevVel;
-    	pos = p;
+    void mouseReleased(int x, int y) {
+        tog.velocity = fling.getVel().x/mouseMass;
     }
 
-    void draw() {
-    	ofCircle(pos.x, pos.y, radius);
+    void mouseDragged( int x , int y ) {
+
+        drag.b = ofVec2f(x,y);
+
+        fling.b = ofVec2f(x,y);
+
+        tog.push(ofMap(drag.getVel().x, -(ofGetWidth() - 400)/4, (ofGetWidth() - 400)/4, -.25, .25));
+
     }
 
-    bool isHit(ofVec2f point) {
-    	if (point.distance(pos) <= radius)
-    		return true;
-    	else
-    		return false;
+    float position() {
+        return tog.positionSmoothed;
     }
 };
 
-
 class ofApp : public ofBaseApp{
-	/*struct particle ball;
-	struct attractor rightAttractor;
-	struct attractor leftAttractor;
-*/
-	//struct particle mouseParticle;
-
 
 	public:
+        struct toggleSystem ts;
 		void setup();
 		void update();
 		void draw();
