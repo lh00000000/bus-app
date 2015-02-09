@@ -1,10 +1,8 @@
-
+#define LABELFROMTOP 58
 
 enum day {
     MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY, NUM_DAYS
 };
-
-
 
 struct currentTimeCursor {
     struct tm * now;
@@ -39,7 +37,6 @@ struct currentTimeCursor {
                 return "noon";
         } else {
             if (now->tm_hour%12 == 0)
-
                 return ofToString(now->tm_hour,0,2,' ') + ":" + ofToString(now->tm_min,0,2,'0') + ampm();
             else
                 return ofToString(now->tm_hour%12,0,2,' ') + ":" + ofToString(now->tm_min,0,2,'0') + ampm();
@@ -90,16 +87,12 @@ struct dayLabel {
 
     }
     void update(int camYPos) {
-        int marginFromTopOfWindow=30;
         int marginFromTopOfDay = 48;
+        int marginFromTopOfWindow = LABELFROMTOP - marginFromTopOfDay;
         if (camYPos + marginFromTopOfWindow < topOfBox) {
             labelY = topOfBox + marginFromTopOfDay;
-        } else if (camYPos + marginFromTopOfWindow > topOfBox && camYPos + marginFromTopOfWindow < bottomOfBox) {
+        } else if (camYPos + marginFromTopOfWindow > topOfBox && camYPos + marginFromTopOfWindow < bottomOfBox - 15) {
             labelY = camYPos + marginFromTopOfWindow + marginFromTopOfDay;
         }
     }
-
-    void draw() {
-    }
-
 };

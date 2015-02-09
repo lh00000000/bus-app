@@ -28,7 +28,8 @@ class ofApp : public ofBaseApp {
     bool drawReturn = false;
 
 public:
-
+    int translateX = 0;
+    int translateXtarget = 0;
     int heightOfWeek = ofGetHeight()*32;
     int heightOfDay = heightOfWeek/7;
     int beginningSecond;
@@ -59,10 +60,15 @@ public:
     void draw();
 
     void drawDayGrid(int r, int g, int b, int brightnessDiff);
-    void drawHellertownToPABT();
-    void drawPABTtoHellertown();
-    inline void snapToCurrentTime() {
-        ball.target.y = ofMap(nowCursor.secIntoWeek - (42*60), 0, secondsInAWeek, ofGetHeight(), 0);
+    void drawWeekGrid(int topOfViewPort, int bottomOfViewPoint);
+    void drawHellertownToPABT(int topOfViewPort, int bottomOfViewPoint);
+    void drawPABTtoHellertown(int topOfViewPort, int bottomOfViewPoint);
+    void drawDayLabels(int topOfViewPort, int bottomOfViewPoint);
+    void drawNowLine();
+
+    inline void snapToCurrentTime(bool jump) {
+        ball.target.y = ofMap(nowCursor.secIntoWeek - (70*60), 0, secondsInAWeek, ofGetHeight(), 0);
+        if (jump) ball.pos = ball.target;
     }
 
     void keyPressed(int key);
@@ -71,7 +77,6 @@ public:
     void mouseDragged(int x, int y, int button);
     void mousePressed(int x, int y, int button);
     void mouseReleased(int x, int y, int button);
-    void mouseDoubleClicked();
     void windowResized(int w, int h);
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);

@@ -33,7 +33,7 @@ struct busTime {
             return "noon";
         } else {
             if (hour()%12 == 0)
-                return ofToString(hour(),0,2,' ') + ":" + ofToString(minute(),0,2,'0');
+                return ofToString(12,0,2,' ') + ":" + ofToString(minute(),0,2,'0');
             else
                 return ofToString(hour()%12,0,2,' ') + ":" + ofToString(minute(),0,2,'0');
         }
