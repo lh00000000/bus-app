@@ -271,14 +271,14 @@ void ofApp::drawWeekGrid(int topOfViewPort, int bottomOfViewPoint) {
         if (dayi == SATURDAY) {
             ofPushMatrix();
             ofTranslate(0,dayi*heightOfDay);
-            drawDayGrid(89,82,65,32);
+            drawDayGrid(18,122,191,32);
             ofRect(0, dayi*heightOfDay, ofGetWidth(), heightOfDay);
             ofPopMatrix();
         }
         if (dayi == SUNDAY) {
             ofPushMatrix();
             ofTranslate(0,dayi*heightOfDay);
-            drawDayGrid(184,174,156,32);
+            drawDayGrid(119,79,56,32);
             ofRect(0, dayi*heightOfDay, ofGetWidth(), heightOfDay);
             ofPopMatrix();
         }
