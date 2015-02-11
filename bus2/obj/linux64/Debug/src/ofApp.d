@@ -309,8 +309,10 @@ obj/linux64/Debug/src/ofApp.o: src/ofApp.cpp src/ofApp.h \
  ../../../libs/openFrameworks/video/ofVideoPlayer.h \
  ../../../libs/openFrameworks/video/ofGstVideoPlayer.h \
  ../../../libs/openFrameworks/3d/ofCamera.h \
- ../../../libs/openFrameworks/3d/ofEasyCam.h src/labels.h src/data.h \
- src/ui.h
+ ../../../libs/openFrameworks/3d/ofEasyCam.h src/horizontalScroller.h \
+ src/verticalScroller.h src/weekGrid.h src/dayEnum.h src/weekTrips.h \
+ src/tripData.h src/timePoint.h src/weekLabels.h src/dayLabel.h \
+ src/routeLabels.h src/doubleClick.h src/timeCursor.h src/currentTime.h
 
 src/ofApp.h:
 
@@ -968,8 +970,28 @@ src/ofApp.h:
 
 ../../../libs/openFrameworks/3d/ofEasyCam.h:
 
-src/labels.h:
+src/horizontalScroller.h:
 
-src/data.h:
+src/verticalScroller.h:
 
-src/ui.h:
+src/weekGrid.h:
+
+src/dayEnum.h:
+
+src/weekTrips.h:
+
+src/tripData.h:
+
+src/timePoint.h:
+
+src/weekLabels.h:
+
+src/dayLabel.h:
+
+src/routeLabels.h:
+
+src/doubleClick.h:
+
+src/timeCursor.h:
+
+src/currentTime.h:

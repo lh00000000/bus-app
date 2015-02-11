@@ -309,8 +309,12 @@ obj/linux64/Debug/src/main.o: src/main.cpp \
  ../../../libs/openFrameworks/video/ofVideoPlayer.h \
  ../../../libs/openFrameworks/video/ofGstVideoPlayer.h \
  ../../../libs/openFrameworks/3d/ofCamera.h \
- ../../../libs/openFrameworks/3d/ofEasyCam.h src/ofApp.h src/labels.h \
- src/data.h src/ui.h ../../../libs/openFrameworks/app/ofAppGlutWindow.h
+ ../../../libs/openFrameworks/3d/ofEasyCam.h src/ofApp.h \
+ src/horizontalScroller.h src/verticalScroller.h src/weekGrid.h \
+ src/dayEnum.h src/weekTrips.h src/tripData.h src/timePoint.h \
+ src/weekLabels.h src/dayLabel.h src/routeLabels.h src/doubleClick.h \
+ src/timeCursor.h src/currentTime.h \
+ ../../../libs/openFrameworks/app/ofAppGlutWindow.h
 
 ../../../libs/openFrameworks/ofMain.h:
 
@@ -968,10 +972,30 @@ obj/linux64/Debug/src/main.o: src/main.cpp \
 
 src/ofApp.h:
 
-src/labels.h:
+src/horizontalScroller.h:
 
-src/data.h:
+src/verticalScroller.h:
 
-src/ui.h:
+src/weekGrid.h:
+
+src/dayEnum.h:
+
+src/weekTrips.h:
+
+src/tripData.h:
+
+src/timePoint.h:
+
+src/weekLabels.h:
+
+src/dayLabel.h:
+
+src/routeLabels.h:
+
+src/doubleClick.h:
+
+src/timeCursor.h:
+
+src/currentTime.h:
 
 ../../../libs/openFrameworks/app/ofAppGlutWindow.h:
