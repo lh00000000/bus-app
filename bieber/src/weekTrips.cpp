@@ -27,16 +27,17 @@ void weekTrips::drawPABTtoHellertown(int topOfViewPort, int bottomOfViewPort) {
     bottomOfViewPort += PRELOAD_BUFFER;
     ofPushStyle();
     ofSetColor(255);
-    for (int i = 0; i < NUM_ROUTES; i++) {
+    for (int i = 0; i < NUM_ROUTES + 1; i++) {
+        
         int leaveTimeX = ofGetWidth()/3 + ofGetWidth();
         int leaveTimeY = ofMap(data.toHellertown[i].startTime.secondsFromSunday, 0, 24*60*60*7, 0, heightOfWeek);
         int arriveTimeX = ofGetWidth()*2/3 + ofGetWidth();
         int arriveTimeY = ofMap(data.toHellertown[i].endTime.secondsFromSunday, 0, 24*60*60*7, 0, heightOfWeek);
-        
+
         if (arriveTimeY < topOfViewPort) continue;
         if (leaveTimeY > bottomOfViewPort) break;
-
-
+    
+        
         if (data.toHellertown[i].endTime.hour() == 8 &&
             data.toHellertown[i].endTime.minute() == 10) {
             arriveTimeY = arriveTimeY + 15;
@@ -95,7 +96,7 @@ void weekTrips::drawHellertownToPABT(int topOfViewPort, int bottomOfViewPort) {
 
         if (arriveTimeY < topOfViewPort) continue;
         if (leaveTimeY > bottomOfViewPort) break;
-
+        
 
         if (data.toPABT[i].endTime.hour() == 8 &&
             data.toPABT[i].endTime.minute() == 10) {

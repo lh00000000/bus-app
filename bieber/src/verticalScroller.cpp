@@ -10,7 +10,7 @@ void verticalScroller::update()
 
     target += vel;
     vel *= drag;
-    y = ofLerp(y, target, 0.8);
+    y = ofLerp(y, target, 0.89);
 
     if (target < 0 && y < 0)
     {
@@ -33,7 +33,7 @@ void verticalScroller::mouseUpdate(int x,int y)
 
 void verticalScroller::mouseRelease()
 {
-    drag =  0.97;
+    drag =  0.91;
     vel = -mouse.getVel().y;
     
 }

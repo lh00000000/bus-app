@@ -1,5 +1,6 @@
 #include "timePoint.h"
 #define NUM_ROUTES 111
+#define SECONDS_IN_WEEK 60*60*24*7
 class tripData {
     struct tripTime {
         timePoint startTime;
@@ -120,7 +121,8 @@ public:
         {timePoint(591300),timePoint(597600)}
     };
 
-    tripTime toHellertown[NUM_ROUTES] = {
+    tripTime toHellertown[NUM_ROUTES + 1] = {
+        {timePoint(604740 - SECONDS_IN_WEEK),timePoint(611100 - SECONDS_IN_WEEK)},
         {timePoint(27000),timePoint(33300)},
         {timePoint(30600),timePoint(36900)},
         {timePoint(36000),timePoint(42300)},

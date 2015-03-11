@@ -37,6 +37,7 @@ public:
                 return ofToString(now->tm_hour%12,0,2,' ') + ":" + ofToString(now->tm_min,0,2,'0') + ampm();
         }
     }
+    
     inline int getSecondsFromWeek() {
         return secIntoWeek;
     }

@@ -26,7 +26,7 @@ class verticalScroller {
 
     float mass = 60;
     float drag = .92;
-    float maxspeed = 10;
+    float maxspeed = 100;
 
     int heightOfWeek;
 public:
